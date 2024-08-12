@@ -10,7 +10,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging (1-3)
 # Use a CPU-only model with the updated multi_label argument
 zero_shot_classifier = pipeline(
     task="zero-shot-classification",
-    model="facebook/distilbart-mnli-12-1"
+    #model="facebook/distilbart-mnli-12-1"
+    model="facebook/bart-base"
 # model="facebook/bart-large-mnli",  # Explicitly specifying the model
 )
 
