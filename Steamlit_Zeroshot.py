@@ -4,7 +4,12 @@ import matplotlib.pyplot as plt
 from transformers import pipeline
 
 # Set up the zero-shot classification pipeline
-zero_shot_classifier = pipeline("zero-shot-classification")
+#zero_shot_classifier = pipeline("zero-shot-classification")
+
+zero_shot_classifier = pipeline(
+    task="zero-shot-classification",
+    model="facebook/bart-large-mnli"  # Explicitly specifying the model
+)
 
 # Streamlit app title
 st.title("Zero-Shot Classification with Hugging Face Transformers")
