@@ -2,3 +2,4 @@ streamlit
 transformers
 matplotlib
 numpy
+tensorflow
