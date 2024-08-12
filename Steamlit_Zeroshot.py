@@ -1,3 +1,9 @@
+# The code is deployed to Streamlit cloud, Adjusted Requirement.txt to suit the Steamlit deployment
+# Code is running on https://ashishchoudhary-nlp-ml-hf-steamlit-zeroshot-1t5ztm.streamlit.app/
+# Use Google id for login to Streamlit cloud
+# URL - https://share.streamlit.io/
+
+
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -47,3 +53,5 @@ if st.button("Classify"):
 
 # Footer
 st.write("Powered by [Hugging Face Transformers](https://huggingface.co/transformers/) and [Streamlit](https://streamlit.io/).")
+
+# The code is deployed to Streamlit cloud, Adjusted Requirement.txt to suit the Steamlit deployment
