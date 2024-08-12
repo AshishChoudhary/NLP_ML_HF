@@ -1,0 +1,42 @@
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from transformers import pipeline
+
+# Set up the zero-shot classification pipeline
+zero_shot_classifier = pipeline("zero-shot-classification")
+
+# Streamlit app title
+st.title("Zero-Shot Classification with Hugging Face Transformers")
+
+# User inputs for the sequence and candidate labels
+sequence = st.text_input("Enter the sequence to classify:", "Can you order some Pizza & book an Uber to the nearest cinema House at 10 PM?")
+candidate_labels = st.text_input("Enter the candidate labels (comma-separated):", "Flight Travel, Cabs Travel, Reminders, Food, Movies")
+
+# Convert the candidate labels to a list
+candidate_labels_list = [label.strip() for label in candidate_labels.split(",")]
+
+# Classification button
+if st.button("Classify"):
+    # Perform zero-shot classification
+    result = zero_shot_classifier(
+        sequences=sequence,
+        candidate_labels=candidate_labels_list,
+        multi_class=True
+    )
+    
+    # Display the classification results as a bar chart
+    st.write("### Classification Results")
+    fig, ax = plt.subplots()
+    ax.bar(result["labels"], result["scores"])
+    ax.set_yticks(np.arange(0, 1.1, 0.1))
+    ax.set_ylabel("Confidence Score")
+    ax.set_xlabel("Labels")
+    ax.set_title("Zero-Shot Classification Results")
+    st.pyplot(fig)
+
+# Footer
+st.write("Powered by [Hugging Face Transformers](https://huggingface.co/transformers/) and [Streamlit](https://streamlit.io/).")
+
+
+#Run - > streamlit run Steamlit_Zeroshot.py
