@@ -1,6 +1,6 @@
-streamlit
-transformers
-matplotlib
-numpy
-tensorflow==4.43.3
+streamlit==1.37.0
+transformers==4.43.3
+matplotlib==3.6.2
+numpy==1.26.4
+tensorflow==2.15.0
 keras==2.15.0
