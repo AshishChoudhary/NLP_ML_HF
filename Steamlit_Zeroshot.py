@@ -3,9 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from transformers import pipeline
 
-# Set up the zero-shot classification pipeline
-#zero_shot_classifier = pipeline("zero-shot-classification")
+# Suppress TensorFlow warnings
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging (1-3)
 
+# Use a CPU-only model
 zero_shot_classifier = pipeline(
     task="zero-shot-classification",
     model="facebook/bart-large-mnli"  # Explicitly specifying the model
@@ -42,6 +44,3 @@ if st.button("Classify"):
 
 # Footer
 st.write("Powered by [Hugging Face Transformers](https://huggingface.co/transformers/) and [Streamlit](https://streamlit.io/).")
-
-
-#Run - > streamlit run Steamlit_Zeroshot.py
