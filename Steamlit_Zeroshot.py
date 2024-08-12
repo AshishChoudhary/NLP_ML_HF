@@ -7,10 +7,10 @@ from transformers import pipeline
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging (1-3)
 
-# Use a CPU-only model
+# Use a CPU-only model with the updated multi_label argument
 zero_shot_classifier = pipeline(
     task="zero-shot-classification",
-    model="facebook/bart-large-mnli"  # Explicitly specifying the model
+    model="facebook/bart-large-mnli",  # Explicitly specifying the model
 )
 
 # Streamlit app title
@@ -29,7 +29,7 @@ if st.button("Classify"):
     result = zero_shot_classifier(
         sequences=sequence,
         candidate_labels=candidate_labels_list,
-        multi_class=True
+        multi_label=True  # Updated argument name
     )
     
     # Display the classification results as a bar chart
