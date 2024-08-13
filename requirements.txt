@@ -5,3 +5,4 @@ numpy
 tensorflow
 keras>=3.2.0
 tf-keras
+KeyBERT
