@@ -18,8 +18,6 @@ summarizer = pipeline("summarization", model="facebook/bart-base")
 
 kw_model = KeyBERT()
 
-ner_model = pipeline("ner", grouped_entities=True)
-
 # Define the function for Zero-Shot Classification
 def zero_shot_classification():
     st.subheader("Zero-Shot Classification with Hugging Face Transformers")
@@ -97,23 +95,6 @@ def keyword_extraction():
         for keyword in keywords:
             st.write(f"- {keyword[0]}")
 
-# Define the function for Named Entity Recognition
-def named_entity_recognition():
-    st.subheader("Named Entity Recognition (NER)")
-
-    # Text input from the user
-    text = st.text_area("Enter text for NER", 
-                        "Barack Obama was born in Hawaii and was the 44th President of the United States.")
-
-    # Perform NER on button click
-    if st.button("Recognize Entities"):
-        entities = ner_model(text)
-
-        # Display recognized entities
-        st.write("Recognized Entities:")
-        for entity in entities:
-            st.write(f"- {entity['entity_group']}: {entity['word']} (Score: {entity['score']:.2f})")
-
 # Main routing logic
 def main():
     st.title("Multi-Function Streamlit App")
@@ -121,7 +102,7 @@ def main():
     # Create a sidebar for navigation
     option = st.sidebar.selectbox(
         "Choose a function",
-        ("Zero-Shot Classification", "Text Summarization", "Keyword Extraction", "Named Entity Recognition")
+        ("Zero-Shot Classification", "Text Summarization", "Keyword Extraction")
     )
 
     # Route to the selected function
@@ -131,8 +112,6 @@ def main():
         text_summarization()
     elif option == "Keyword Extraction":
         keyword_extraction()
-    elif option == "Named Entity Recognition":
-        named_entity_recognition()
 
 # Run the app
 if __name__ == "__main__":
