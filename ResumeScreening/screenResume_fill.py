@@ -4,7 +4,8 @@ from docx import Document
 from sentence_transformers import SentenceTransformer
 import pandas as pd
 import spacy
-from scipy.spatial.distance import euclidean
+from spacy.matcher import Matcher
+from scipy.spatial.distance import euclidean, cosine
 
 # Load spaCy's English model
 nlp = spacy.load('en_core_web_sm')
@@ -48,24 +49,46 @@ def read_text_files_from_folder(folder_path):
             texts[file_name] = read_text_file(file_path)
     return texts
 
-# Function to extract entities from the resume text
+# Function to calculate combined similarity
+def calculate_combined_similarity(resume_embedding, jd_embedding):
+    euclidean_dist = euclidean(resume_embedding, jd_embedding)
+    cosine_dist = cosine(resume_embedding, jd_embedding)
+    
+    # Convert distances to similarity scores
+    euclidean_similarity = 1 / (1 + euclidean_dist)
+    cosine_similarity = 1 - cosine_dist
+    
+    # Combine both similarity scores
+    combined_similarity = (euclidean_similarity + cosine_similarity) / 2
+    
+    return combined_similarity
+
+# Enhanced entity extraction
 def extract_information(text):
     doc = nlp(text)
+    matcher = Matcher(nlp.vocab)
+    
+    # Patterns for matching company names (simple heuristic)
+    company_pattern = [{"ENT_TYPE": "ORG"}]
+    matcher.add("COMPANY", [company_pattern])
+    
+    matches = matcher(doc)
+    companies = set()
+    experience = set()
+    certificates = set()
+    skillsets = set()
 
-    companies = []
-    experience = []
-    certificates = []
-    skillsets = []
+    for match_id, start, end in matches:
+        span = doc[start:end]
+        companies.add(span.text)
 
     for ent in doc.ents:
-        if ent.label_ == "ORG":  # Company names
-            companies.append(ent.text)
-        elif ent.label_ == "DATE":  # Dates often correlate with experience
-            experience.append(ent.text)
-        elif "certificate" in ent.text.lower():  # Simple heuristic for certificates
-            certificates.append(ent.text)
-        elif ent.label_ == "GPE" or ent.label_ == "PERSON":  # Heuristic for skills
-            skillsets.append(ent.text)
+        if ent.label_ == "DATE":
+            experience.add(ent.text)
+        elif "certificate" in ent.text.lower():
+            certificates.add(ent.text)
+        elif ent.label_ in ["GPE", "PERSON"]:
+            skillsets.add(ent.text)
 
     return {
         "Companies": ', '.join(companies),
@@ -81,17 +104,15 @@ jds = read_text_files_from_folder(jd_folder)
 # List to store results
 results = []
 
-# Compare each resume with each JD using Euclidean Distance
+# Compare each resume with each JD using combined similarity
 for resume_name, resume_text in resumes.items():
     resume_embedding = model.encode(resume_text)
     extracted_info = extract_information(resume_text)
 
     for jd_name, jd_text in jds.items():
         jd_embedding = model.encode(jd_text)
-        # Calculate Euclidean Distance
-        distance = euclidean(resume_embedding, jd_embedding)
-        # Convert distance to a similarity score
-        similarity_score = 1 / (1 + distance)  # Normalize score to (0, 1)
+        similarity_score = calculate_combined_similarity(resume_embedding, jd_embedding)
+        
         results.append({
             "Resume": resume_name,
             "Job Description": jd_name,
